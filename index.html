@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Self Love Spray</title>
 
- <link rel="stylesheet" href="https://unpkg.com/pretendard/dist/web/variable/pretendardvariable.css" />
- 
+ <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+
   <style>
   /* 공통 설정 */
   body {
@@ -248,13 +248,36 @@
 .sharp-hover-section:hover {
   filter: blur(0px) grayscale(0%);
 }
+
+--
+
+@keyframes flyAround {
+  0% {
+    transform: translate(0, 0) scale(0.5) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.5) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.butterfly {
+  position: absolute;
+  width: 80px;
+  height: auto;
+  pointer-events: none;
+  animation: flyAround 3s ease-out forwards;
+}
+
 </style>
 
 </head>
-<body>
-
-
   <body>
+   <div id="butterfly-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9998;"></div>
+
+
+<!-- 2. 스프레이 클릭 이벤트 수정 -->
    <canvas id="spray-canvas"></canvas>
 
 <script>
@@ -501,22 +524,44 @@
   </div>
 
     <!-- 스프레이 이미지 (클릭 시 작동) -->
-    <div style="margin-left: auto; padding-right: 0;">
-      <img src="hand 1.png" alt="Self Love Spray Bottle" style="height: 700px; display: block; cursor: pointer;" onclick="spray()" />
-    </div>
+    <div style="margin-left: auto; padding-right: 0; display: flex; gap: 40px;">
+  <img src="hand 1.png" alt="Self Love Spray Bottle" style="height: 700px; cursor: pointer;" onclick="spray()" />
+  <img src="hand 1.png" alt="Self Love Spray Bottle" style="height: 700px; cursor: pointer;" onclick="spray()" />
+  <img src="hand 1.png" alt="Self Love Spray Bottle" style="height: 700px; cursor: pointer;" onclick="spray()" />
+</div>
+
 
   </div>
 </section>
 
 <script>
   function spray() {
-    const scent = document.getElementById('scent');
-    scent.style.opacity = 1;
+  const container = document.getElementById("butterfly-container");
 
+  for (let i = 0; i < 12; i++) {
+    const butterfly = document.createElement("img");
+    butterfly.src = "fly.gif";
+    butterfly.classList.add("butterfly");
+
+    // 시작 위치: 화면 내 무작위
+    butterfly.style.left = `${Math.random() * 100}vw`;
+    butterfly.style.top = `${Math.random() * 100}vh`;
+
+    // 이동 거리 (CSS 변수로 전달)
+    const dx = `${Math.random() * 600 - 300}px`; // 좌우 -300~300px
+    const dy = `${Math.random() * 600 - 300}px`; // 위아래 -300~300px
+    butterfly.style.setProperty('--dx', dx);
+    butterfly.style.setProperty('--dy', dy);
+
+    container.appendChild(butterfly);
+
+    // 3초 후 제거
     setTimeout(() => {
-      scent.style.opacity = 0;
-    }, 1000); // 1초 후 향기 사라짐
+      butterfly.remove();
+    }, 3000);
   }
+}
+
 </script>
 
 <section class="scent-carousel">
