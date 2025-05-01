@@ -244,10 +244,6 @@
   max-width: 100%; /* 작은 화면에서는 넘치지 않게 */
   margin: 0 auto; /* 항상 가운데 정렬 */
   box-sizing: border-box;
-
-  .fade-in {
-  opacity: 0;
-  animation: fadeIn 2s ease-out forwards;
 }
 
 @keyframes fadeIn {
@@ -304,6 +300,42 @@
   pointer-events: none;
   animation: flyAround 3s ease-out forwards;
 }
+
+.fade-in-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+.fade-in-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+  .buy-button {
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Pretendard', sans-serif;
+    transition: all 0.2s ease;
+  }
+
+  .buy-button:hover {
+    background: white;
+    color: black;
+    border: 2px solid black;
+  }
+
+  .buy-button:active {
+    transform: scale(0.97);
+    background-color: #222;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
 
 </style>
 
@@ -406,9 +438,8 @@
     <div class="left" style="max-width: 70%;">
       <h1 style="font-size: 80px; color: #A30000;">Self Love<br>Spray</h1>
       <p style="color: black;">자기혐오가 올라올 때, 다정한 리셋을</p>
-      <button style="background-color: black; color: white; font-size: 16px; font-weight: bold; padding: 12px 28px; border: none; border-radius: 999px; cursor: pointer;">
-        BUY
-      </button>
+      <button class="buy-button">BUY</button>
+
     </div>
 </div>
   </header>
@@ -472,10 +503,10 @@
     text-align: center;
   ">
     <div style="color: white; text-align: center;">
-  <p class="fade-in" style="font-size: 18px; font-family: 'Pretendard'; font-weight: 400; margin: 0; line-height: 1.2;">
+  <p class="fade-in-on-scroll" style="font-size: 18px; font-family: 'Pretendard'; font-weight: 400; margin: 0; line-height: 1.2;">
     알람을 7개나 맞춰놨는데 또 늦잠 자고 지각해서,
   </p>
-  <p class="fade-in" style="font-size: 28px; font-family: 'Pretendard'; font-weight: 700; line-height: 1;">
+  <p class="fade-in-on-scroll" style="font-size: 28px; font-family: 'Pretendard'; font-weight: 700; line-height: 1;">
     나 자신이 한심하게 느껴졌나요?
   </p>
 </div>
@@ -495,10 +526,10 @@
     text-align: center;
   ">
     <div style="color: white;">
-      <p style="font-size: 18px; font-family: 'Pretendard'; font-weight: 400; margin: 0; line-height: 1.2;">
+      <p class="fade-in-on-scroll" style="font-size: 18px; font-family: 'Pretendard'; font-weight: 400; margin: 0; line-height: 1.2;">
         하루 종일 작업했는데, 결국 아무것도 완성 못해서
       </p>
-      <p style="font-size: 28px; font-family: 'Pretendard'; font-weight: 700; line-height: 1;">
+      <p class="fade-in-on-scroll" style="font-size: 28px; font-family: 'Pretendard'; font-weight: 700; line-height: 1;">
         괜히 자괴감이 들었나요?
       </p>
     </div>
@@ -517,10 +548,10 @@
     text-align: center;
   ">
     <div style="color: white;">
-      <p style="font-size: 18px; font-family: 'Pretendard'; font-weight: 400; margin: 0; line-height: 1.2;">
+      <p class="fade-in-on-scroll" style="font-size: 18px; font-family: 'Pretendard'; font-weight: 400; margin: 0; line-height: 1.2;">
         종일 누워만 있었는데, SNS엔 다들 성공한 인생 같아서
       </p>
-      <p style="font-size: 28px; font-family: 'Pretendard'; font-weight: 700; line-height: 1;">
+      <p class="fade-in-on-scroll" style="font-size: 28px; font-family: 'Pretendard'; font-weight: 700; line-height: 1;">
         나만 뒤처지는 느낌이 들었나요?
       </p>
     </div>
@@ -844,17 +875,16 @@ items.forEach(item => {
 
   <!-- 텍스트 및 버튼 -->
   <p style="font-size: 16px; margin-top: 50px;">지금 나를 위한 루틴 시작하기</p>
-  <button style="
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 10px 30px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    font-family: 'Pretendard', sans-serif;
-  ">BUY</button>
+
+<button class="buy-button" onclick="scrollToTop()">BUY</button>
+
+
+
+<script>
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
 
   <!-- 하단 로고 -->
   <div style="margin-top: 300px;">
@@ -865,6 +895,22 @@ items.forEach(item => {
 </section>
 
 
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // 한 번만 실행되게
+      }
+    });
+  }, {
+    threshold: 0.1 // 요소가 10% 보이면 실행
+  });
 
+  // ✅ 클래스명 수정됨
+  document.querySelectorAll('.fade-in-on-scroll').forEach(el => {
+    observer.observe(el);
+  });
+</script>
 </body>
 </html>
